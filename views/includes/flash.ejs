@@ -1,8 +1,3 @@
-<% /* views/includes/flash.ejs
-  Partial that renders flash messages (success/error).
-  Uses a small JS helper to auto-dismiss messages.
-*/ %>
-<% /* Flash messages: guard with typeof so template doesn't throw when flash middleware not configured */ %>
 <% if (typeof success !== 'undefined' && success && success.length > 0) { %>
   <div class="alert alert-success flash-alert" role="alert">
     <%= success[0] %>
@@ -15,7 +10,6 @@
   </div>
 <% } %>
 
-<!-- Auto-dismiss flash messages after 2 seconds -->
 <style>
   .flash-alert { transition: opacity 0.5s ease, transform 0.5s ease; }
   .flash-alert.fade-out { opacity: 0; transform: translateY(-8px); }
