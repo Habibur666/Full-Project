@@ -111,6 +111,11 @@ app.use("/listings", listingsRouter)
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
 
+// Home route
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
+
 // Catch-all for unmatched routes (use app.use so no path parsing occurs)
 app.use((req, res, next) => {
   next(new ExpressError(404, "Page not found"));
