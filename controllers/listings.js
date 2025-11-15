@@ -1,12 +1,25 @@
 const Listing = require("../models/listing");
 
-module.exports.deleteListing = async (req,res)=>{
-  let {_id}=req.params;
+// module.exports.deleteListing = async (req,res)=>{
+//   let {_id}=req.params;
+//   await Listing.findByIdAndDelete(_id);
+//   res.redirect("/listings");
+//   let originalImageUrl=listing.image.url;
+//   originalImageUrl=originalImageUrl.replace('/uploads','/uploads/h_300,w_250');
+//   res.render("listings/edit.ejs", {listing, originalImageUrl});
+// };
+module.exports.deleteListing = async (req, res) => {
+  let { _id } = req.params;
+  const listing = await Listing.findById(_id);
+  if (!listing) {
+    req.flash("error", "Listing not found!");
+    return res.redirect("/listings");
+  }
+  let originalImageUrl = listing.image.url;
+  originalImageUrl = originalImageUrl.replace('/uploads', '/uploads/h_300,w_250');
   await Listing.findByIdAndDelete(_id);
+  req.flash("success", "Listing deleted successfully!");
   res.redirect("/listings");
-  let originalImageUrl=listing.image.url;
-  originalImageUrl=originalImageUrl.replace('/uploads','/uploads/h_300,w_250');
-  res.render("listings/edit.ejs", {listing, originalImageUrl});
 };
 
 module.exports.updateListing=async (req,res)=>{
