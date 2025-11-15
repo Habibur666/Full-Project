@@ -1,6 +1,3 @@
-// controllers/listings.js
-// Controller functions for listings routes. These are used by the route layer
-// to keep route handlers thin and testable.
 const Listing = require("../models/listing");
 
 module.exports.deleteListing = async (req,res)=>{
@@ -15,10 +12,7 @@ module.exports.deleteListing = async (req,res)=>{
 module.exports.updateListing=async (req,res)=>{
   let {_id}=req.params;
   const update = { ...req.body };
-  // if (req.body.image && typeof req.body.image === 'object' && req.body.image.url) {
-  //   update.image = { url: req.body.image.url };
-  // }
-  // Ensure we don't overwrite image with an empty string
+  }
   let xyz=await Listing.findByIdAndUpdate(_id, update, { runValidators: true });
   if(typeof req.file !== 'undefined'){
   let url=req.file.path;
@@ -46,8 +40,6 @@ module.exports.createListing=async (req, res) => {
   newListing.image={url: url, filename: filename};
   await newListing.save();
   req.flash("success", "Successfully created a new listing!");
-  // Use 303 See Other to instruct browsers to perform a GET for the redirect target
-  // This avoids some clients reusing a cached response after a POST.
   res.redirect(303, `/listings`);
 };
 
@@ -62,9 +54,8 @@ module.exports.showListing=async (req,res)=>{
     })
     .populate({
       path: 'owner',
-      select: 'username email' // only get username and email fields
+      select: 'username email'
     });
-  // console.log(listing);
   res.render("listings/show.ejs", {listing});
 };
 
