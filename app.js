@@ -33,6 +33,8 @@ const passport=require("passport");//যখন অ্যাপে ইউজা�
 const LocalStrategy=require("passport-local");//লোকাল অথেন্টিকেশনের জন্য, ইউজারনেম এবং পাসওয়ার্ড দিয়ে লগইন করার জন্য
 const User=require("./models/user.js");
 
+// Database URL from environment variables
+const dbURL=process.env.ATLAS_DB;
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -83,8 +85,6 @@ app.use((req,res, next)=>{
   res.locals.currentUser=req.user;
   next();
 });
-
-const dbURL=process.env.ATLAS_DB;
 
 main().then((res)=>{
   console.log("MongoDB connected");
