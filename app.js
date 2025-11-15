@@ -33,8 +33,13 @@ const passport=require("passport");//যখন অ্যাপে ইউজা�
 const LocalStrategy=require("passport-local");//লোকাল অথেন্টিকেশনের জন্য, ইউজারনেম এবং পাসওয়ার্ড দিয়ে লগইন করার জন্য
 const User=require("./models/user.js");
 
-// Database URL from environment variables
-const dbURL=process.env.ATLAS_DB;
+// Database URL from environment variables with validation
+const dbURL = process.env.ATLAS_DB || process.env.MONGODB_URL || "mongodb://127.0.0.1:27017/wanderlust";
+
+if(!dbURL || dbURL === "") {
+  console.error("FATAL: Database URL (ATLAS_DB or MONGODB_URL) not configured in environment variables");
+  process.exit(1);
+}
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -43,16 +48,22 @@ app.use(express.urlencoded({extended: true}));//form data পার্স কর
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 
-const store=MongoStore.create({
+const storeConfig = {
   mongoUrl: dbURL,
-  crypto:{
-    secret:process.env.SECRET,
-  },
-  touchAfter:24*60*60,//24 hours
-});
+  touchAfter: 24*60*60,//24 hours
+};
 
-store.on("error", (err)=>{
-  console.log("Session store error", err);
+// Only add crypto config if SECRET is provided
+if(process.env.SECRET) {
+  storeConfig.crypto = {
+    secret: process.env.SECRET
+  };
+}
+
+const store = MongoStore.create(storeConfig);
+
+store.on("error", (err) => {
+  console.error("Session store error:", err.message);
 });
 
 // Session configuration (required before passport.session and flash)
