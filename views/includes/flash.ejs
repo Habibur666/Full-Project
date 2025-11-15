@@ -1,0 +1,43 @@
+<% /* views/includes/flash.ejs
+  Partial that renders flash messages (success/error).
+  Uses a small JS helper to auto-dismiss messages.
+*/ %>
+<% /* Flash messages: guard with typeof so template doesn't throw when flash middleware not configured */ %>
+<% if (typeof success !== 'undefined' && success && success.length > 0) { %>
+  <div class="alert alert-success flash-alert" role="alert">
+    <%= success[0] %>
+  </div>
+<% } %>
+
+<% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+  <div class="alert alert-danger flash-alert" role="alert">
+    <%= error[0] %>
+  </div>
+<% } %>
+
+<!-- Auto-dismiss flash messages after 2 seconds -->
+<style>
+  .flash-alert { transition: opacity 0.5s ease, transform 0.5s ease; }
+  .flash-alert.fade-out { opacity: 0; transform: translateY(-8px); }
+</style>
+<script>
+  (function(){
+    // wait for DOM
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+    function init(){
+      const el = document.querySelector('.flash-alert');
+      if (!el) return;
+      // keep visible for 2000ms then fade and remove
+      setTimeout(()=>{
+        el.classList.add('fade-out');
+        setTimeout(()=>{
+          if (el && el.parentNode) el.parentNode.removeChild(el);
+        }, 500);
+      }, 2000);
+    }
+  })();
+</script>
