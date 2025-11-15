@@ -1,6 +1,3 @@
-// init/index.js
-// Simple database seeding script used to populate the listings collection with sample data.
-// Run only when invoked directly: `node init/index.js`
 const mongoose=require("mongoose");
 const initData=require("./data.js");
 const Listing=require("../models/listing.js");
@@ -19,13 +16,11 @@ async function main(){
 
 const initDb=async()=>{
   await Listing.deleteMany({});
-  // Ensure we return a new array with the owner field set on each object
-  initData.data = initData.data.map(obj => ({ ...obj, owner: "69032f7d85fb235e91acaeff" }));//add owner field to each listing
+  initData.data = initData.data.map(obj => ({ ...obj, owner: "69032f7d85fb235e91acaeff" }));
   await Listing.insertMany(initData.data);
   console.log("Database Initialized");
 }
 
-// Only run the initializer when this file is executed directly (not when required)
 if (require.main === module) {
   initDb().catch(err => {
     console.error('Failed to initialize DB:', err);
