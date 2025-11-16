@@ -1,7 +1,3 @@
-// route/review.js
-// Router for nested reviews resource mounted at /listings/:id/reviews
-// - POST /listings/:id/reviews       -> create review (requires login)
-// - DELETE /listings/:id/reviews/:id -> delete review (requires login & ownership check elsewhere)
 const express = require("express");
 const router=express.Router({mergeParams:true});
 const wrapAsync = require("../util/wrapAsync");
@@ -21,12 +17,7 @@ const validateReview = (req, res, next) => {
   next();
 };
 
-//reviews
-//post route
 router.post("/", isLoggedIn, validateReview, wrapAsync(controllersReview.postReview));
 
-
-// Delete review route
-// Purpose: Remove a review from a listing
 router.delete("/:reviewId", isLoggedIn, isReviewAuthor, wrapAsync(controllersReview.deleteReview));
 module.exports=router;

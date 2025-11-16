@@ -1,6 +1,3 @@
-// Mongoose schema for Listing
-// Purpose: Defines the structure and types for a listing document in MongoDB
-
 const mongoose=require("mongoose");
 const Review = require("./review");
 const Schema=mongoose.Schema;

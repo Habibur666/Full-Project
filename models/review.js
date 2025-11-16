@@ -1,6 +1,3 @@
-// models/review.js
-// Mongoose schema for Reviews.
-// Each review stores a comment, rating, a reference to the author (User), and a timestamp.
 const mongoose=require("mongoose");
 const Schema=mongoose.Schema;
 

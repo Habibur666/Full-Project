@@ -26,8 +26,7 @@ footer{
   color: rgb(79, 78, 78);
   text-align: center;
   padding: 12px 0;
-  /* Make footer part of normal document flow so it doesn't cover content */
-  position: static; /* previously fixed */
+  position: static;
 }
 
 footer a{
@@ -58,10 +57,9 @@ footer a:hover{
 }
 
 .f_social a:hover{
-  color: rgb(243, 41, 41); /* keep hover consistent with nav */
+  color: rgb(243, 41, 41);
 }
 
-/* Ensure font-awesome <i> icons inside social links inherit the link color */
 .f_social a i{
   color: inherit;
 }
@@ -70,7 +68,6 @@ footer a:hover{
   text-decoration: none;
   font-size: smaller;
   text-align: center;
-  /* display: flex; */
   gap: 12px;
   justify-content: center;
   align-items: center;
@@ -79,21 +76,17 @@ footer a:hover{
 .f_info{
   display: flex;
   flex-wrap: wrap;
-  /* distribute items evenly so the center block sits visually centered */
   justify-content: space-around;
   align-items: center;
   padding: 10px 20px;
-  /* border-bottom: 1px solid #eee; */
   text-align: center;
   width: 100%;
 }
 
-/* Shift main content slightly to the right as requested */
 main.container {
   margin-left: 2rem;
 }
 
-/* Ensure main content has spacing so footer doesn't overlap when using small screens */
 main.container {
   padding-bottom: 6rem;
 }
@@ -119,4 +112,12 @@ main.container {
 
 .btns{
   display: flex;
+}
+
+.box{
+  border:1px solid black;
+  padding:10px;
+  margin-top: 1rem;
+  height: fit-content;
+  width: fit-content;
 }
