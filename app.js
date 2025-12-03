@@ -101,9 +101,13 @@ app.get("/", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
+    if (res.headersSent) {
+        return next(err); // already response sent → pass to default Express handler
+    }
     const { statusCode = 500 } = err;
     res.status(statusCode).send(err.message || "Something went wrong");
 });
+
 
 
 app.listen(port, () => {
