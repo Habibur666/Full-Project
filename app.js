@@ -100,11 +100,6 @@ app.get("/", (req, res) => {
     res.redirect("/listings");
 });
 
-
-app.all( (req, res, next) => {
-    next(new ExpressError(404, "Page not found"));
-});
-
 app.use((err, req, res, next) => {
     const { statusCode = 500 } = err;
     res.status(statusCode).send(err.message || "Something went wrong");
