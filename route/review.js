@@ -20,4 +20,5 @@ const validateReview = (req, res, next) => {
 router.post("/", isLoggedIn, validateReview, wrapAsync(controllersReview.postReview));
 
 router.delete("/:reviewId", isLoggedIn, isReviewAuthor, wrapAsync(controllersReview.deleteReview));
+
 module.exports=router;

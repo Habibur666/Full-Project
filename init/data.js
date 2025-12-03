@@ -1,10 +1,3 @@
-// init/data.js
-// Sample data used by the DB seeding script (init/index.js).
-// Each object represents a listing. The seeder assigns an `owner` id at runtime.
-
-// Sample listings data
-// Purpose: Provides sample data for seeding the database with initial listings
-
 const sampleListings = [
   {
     title: "Cozy Beachfront Cottage",

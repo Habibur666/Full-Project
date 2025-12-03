@@ -1,16 +1,10 @@
-// schema.js
-// Joi validation schemas for incoming form payloads.
-// - listingSchema: validates listing create/update payload
-// - reviewSchema: validates review payload nested under `review` key
 const Joi = require("joi");
 
-// Accept either a string image URL or an image object with a url property
 const imageSchema = Joi.alternatives().try(
   Joi.string().allow('', null),
   Joi.object({ url: Joi.string().allow('', null) })
 );
 
-// Validate the flat body fields submitted by the form (title, description, price, etc.)
 const listingSchema = Joi.object({
   title: Joi.string().required(),
   description: Joi.string().required(),

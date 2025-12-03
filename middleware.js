@@ -1,10 +1,3 @@
-// middleware.js
-// Central place for express middleware helpers used across routes.
-// Exports:
-// - isLoggedIn: redirect to /login when user is not authenticated
-// - saveRedirectUrl: store/restore intended redirect after login
-// - setCurrentUser: expose authenticated user to templates via res.locals.currentUser
-// - isOwner: authorization check to ensure resource ownership
 const Listing = require("./models/listing");
 const Review = require("./models/review");
 
@@ -46,7 +39,7 @@ module.exports.isReviewAuthor = async (req, res, next) => {
     req.flash('error', 'Review not found');
     return res.redirect('back');
   }
-  // Ensure user is logged in and is the author of the review
+  
   if (!res.locals.currentUser || String(review.author) !== String(res.locals.currentUser._id)) {
     req.flash('error', 'You do not have permission to do that!');
     return res.redirect(`/listings/${req.params.id}`);
