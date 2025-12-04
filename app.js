@@ -100,15 +100,14 @@ app.get("/", (req, res) => {
     res.redirect("/listings");
 });
 
-
-// app.all("*", (req, res, next) => {
-//     next(new ExpressError(404, "Page not found"));
-// });
-
 app.use((err, req, res, next) => {
+    if (res.headersSent) {
+        return next(err); 
+    }
     const { statusCode = 500 } = err;
     res.status(statusCode).send(err.message || "Something went wrong");
 });
+
 
 
 app.listen(port, () => {
