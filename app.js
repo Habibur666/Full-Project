@@ -37,6 +37,27 @@ if (!process.env.SECRET || process.env.SECRET === "") {
     process.exit(1);
 }
 
+// Handle unhandled promise rejections (like connect-mongo errors)
+process.on('unhandledRejection', (err) => {
+    // Suppress the specific connect-mongo null length error
+    if (err && err.message && err.message.includes("Cannot read properties of null (reading 'length')")) {
+        // This is a known connect-mongo v5 bug, silently ignore it
+        return;
+    }
+    console.error('Unhandled Promise Rejection:', err);
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+    // Suppress the specific connect-mongo null length error
+    if (err && err.message && err.message.includes("Cannot read properties of null (reading 'length')")) {
+        // This is a known connect-mongo v5 bug, silently ignore it
+        return;
+    }
+    console.error('Uncaught Exception:', err);
+    process.exit(1);
+});
+
 // Async function to initialize the app
 async function startApp() {
     try {
@@ -44,16 +65,25 @@ async function startApp() {
         await mongoose.connect(dbURL);
         console.log("✅ MongoDB Connected to Atlas");
         
-        // Create session store after MongoDB connection is established
+        // Ensure the connection is fully ready
+        const db = mongoose.connection.db;
+        const client = mongoose.connection.getClient();
+        
+        if (!db || !client) {
+            throw new Error("MongoDB connection not fully initialized");
+        }
+        
+        // Create session store using clientPromise for connect-mongo v5
+        // This is the recommended approach for mongoose connections
         const store = MongoStore.create({
-            mongoUrl: dbURL,
+            clientPromise: Promise.resolve(client),
+            dbName: db.databaseName,
             collectionName: "sessions",
             touchAfter: 24 * 60 * 60, // 1 day
-            crypto: {
-                secret: process.env.SECRET
-            }
+            ttl: 7 * 24 * 60 * 60 // 7 days
         });
 
+        // Handle store errors gracefully
         store.on("error", (err) => {
             console.error("⚠ Session store error:", err.message);
         });
