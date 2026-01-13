@@ -4,9 +4,7 @@
   <img src="<%= listing.image.url %>" class="card-img-top  show-img" alt="<%= listing.image.filename %>">
   <div class="card-body">
     <p class="card-text">
-      <!-- <% if (listing.owner && listing.owner.username) { %> -->
         <i>Posted by: <%=listing.owner.username%></i> <br>
-      <!-- <% } %> -->
       <b><%= listing.title %></b> <br>
       <i><%= listing.description %></i> <br>
       Price:&#8377; <%= listing.price.toLocaleString() %> / night<br>

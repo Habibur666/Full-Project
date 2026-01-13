@@ -38,4 +38,5 @@ temp/
 dist/
 build/
 
-PROJECT_DOCUMENTATION_BN.md
+# Added project documentation file to ignore
+project_documentation_bn.md

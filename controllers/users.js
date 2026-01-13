@@ -9,7 +9,6 @@ module.exports.signupUser=async (req,res,next)=>{
   let {username, email, password}=req.body;
   let newUser=new User({username, email});
   let registeredUser=await User.register(newUser, password);
-  //console.log(registeredUser);
   req.login(registeredUser, (err)=>{
     if(err) return next(err);
     req.flash("success", "Welcome to Wanderlust!");

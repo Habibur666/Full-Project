@@ -4,8 +4,7 @@ if (process.env.NODE_ENV !== "production") {
 
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 3000;
-
+const port = process.env.PORT || 3000;  
 const mongoose = require("mongoose");
 const Listing = require("./models/listing");
 const path = require("path");
@@ -26,7 +25,7 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
 
-const dbURL = process.env.ATLAS_DB;
+const dbURL = process.env.ATLAS_DB  || "mongodb://127.0.0.1:27017/wanderlast";
 
 if (!dbURL || dbURL === "") {
     console.error("❌ FATAL ERROR: ATLAS_DB is not set in environment variables!");
@@ -34,18 +33,20 @@ if (!dbURL || dbURL === "") {
 }
 
 
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-app.engine("ejs", ejsMate);
-
-
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride("_method"));
+mongoose.connect(dbURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+.then(() => console.log("✅ MongoDB Connected to Atlas"))
+.catch((err) => {
+    console.error("❌ MongoDB Connection Error:", err);
+    process.exit(1);
+});
 
 
 const store = MongoStore.create({
     mongoUrl: dbURL,
+    collectionName: "sessions", 
     touchAfter: 24 * 60 * 60, 
     crypto: {
         secret: process.env.SECRET
@@ -56,13 +57,14 @@ store.on("error", (err) => {
     console.error("⚠ Session store error:", err.message);
 });
 
+
 const sessionOptions = {
     store,
-    secret: process.env.SECRET || "fallbackSecret123",
+    secret: process.env.SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false, 
     cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7, 
         httpOnly: true
     }
 };
@@ -86,12 +88,12 @@ app.use((req, res, next) => {
     next();
 });
 
-
-mongoose.connect(dbURL)
-    .then(() => console.log("✅ MongoDB Connected to Atlas"))
-    .catch((err) => console.log("❌ MongoDB Error:", err));
-
-
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.engine("ejs", ejsMate);
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
@@ -101,13 +103,10 @@ app.get("/", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    if (res.headersSent) {
-        return next(err); 
-    }
+    if (res.headersSent) return next(err);
     const { statusCode = 500 } = err;
     res.status(statusCode).send(err.message || "Something went wrong");
 });
-
 
 
 app.listen(port, () => {

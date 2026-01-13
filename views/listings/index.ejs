@@ -3,7 +3,8 @@
   <style>
   #filters{
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; /* Ensure filters are in a single line */
+    overflow-x: auto; /* Enable horizontal scrolling */
     margin-right: 1rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
@@ -35,16 +36,15 @@
   }
 
   #task-toogle{
-    border: 1px solid black;
-    border-radius: 2rem;
-    height: 3rem;
-    margin-left: auto;
+    position: absolute; /* Keep GST toggle fixed on the right */
+    right: 1rem;
     padding: 1rem;
     display: flex;
     align-items: center;
     flex-shrink: 0;
     white-space: nowrap;
   }
+
 
   /* Mobile Responsive - Filters */
   @media (max-width: 768px) {
@@ -63,15 +63,6 @@
     
     .filter i {
       font-size: 1.2rem;
-    }
-    
-    #task-toogle {
-      margin-left: 0;
-      margin-top: 0.5rem;
-      width: 100%;
-      padding: 0.5rem;
-      height: auto;
-      justify-content: center;
     }
   }
 
@@ -94,10 +85,10 @@
     .filter i {
       font-size: 1rem;
     }
-    
-    #task-toogle {
-      width: 100%;
-      font-size: 0.85rem;
+
+    #task-toogle{
+      background-color: rgb(255, 255, 255);
+      /* opacity: 1; */
     }
   }
 </style>

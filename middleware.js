@@ -17,10 +17,7 @@ module.exports.saveRedirectUrl=(req,res,next)=>{
   next();
 };
 
-module.exports.setCurrentUser = (req, res, next) => {
-  res.locals.currentUser = req.user;
-  next();
-};
+
 
 module.exports.isOwner=async(req,res,next)=>{
   const {_id}=req.params;
