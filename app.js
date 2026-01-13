@@ -61,6 +61,11 @@ process.on('uncaughtException', (err) => {
 // Async function to initialize the app
 async function startApp() {
     try {
+        // Log environment info for debugging
+        console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`🔗 Database: ${dbURL ? 'Connected' : 'Not set'}`);
+        console.log(`🔑 Secret: ${process.env.SECRET ? 'Set' : 'Not set'}`);
+        
         // Connect to MongoDB first
         await mongoose.connect(dbURL);
         console.log("✅ MongoDB Connected to Atlas");
@@ -96,9 +101,13 @@ async function startApp() {
             cookie: {
                 maxAge: 1000 * 60 * 60 * 24 * 7, 
                 httpOnly: true,
-                secure: process.env.NODE_ENV === "production" // Use secure cookies in production
+                secure: process.env.NODE_ENV === "production", // Use secure cookies in production (HTTPS required)
+                sameSite: process.env.NODE_ENV === "production" ? "lax" : "lax" // Use lax for same-site requests
             }
         };
+
+        // Trust proxy for Render and other hosting platforms
+        app.set('trust proxy', 1);
 
         app.use(session(sessionOptions));
         app.use(flash());
