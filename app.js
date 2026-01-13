@@ -25,11 +25,10 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
 
-const dbURL = process.env.ATLAS_DB  || "mongodb://127.0.0.1:27017/wanderlast";
+const dbURL = process.env.MONGO_URI;
 
-// Validate dbURL before using it
 if (!dbURL || dbURL === "") {
-    console.error("❌ FATAL ERROR: ATLAS_DB is not set or invalid in environment variables!");
+    console.error("❌ FATAL ERROR: MONGO_URI is not set or invalid in environment variables!");
     process.exit(1);
 }
 
