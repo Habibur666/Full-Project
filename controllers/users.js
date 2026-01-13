@@ -1,5 +1,4 @@
 const User=require("../models/user.js");
-const { body, validationResult } = require("express-validator");
 
 module.exports.renderSignupUser=(req,res)=>{
   res.render("users/signup.ejs");
@@ -7,12 +6,6 @@ module.exports.renderSignupUser=(req,res)=>{
 
 module.exports.signupUser=async (req,res,next)=>{ 
   try{
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      req.flash("error", "Invalid input. Please check your details.");
-      return res.redirect("/signup");
-    }
-
     let {username, email, password}=req.body;
     if (!username || !email || !password) {
       req.flash("error", "All fields are required.");
