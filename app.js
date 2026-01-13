@@ -27,8 +27,9 @@ const User = require("./models/user.js");
 
 const dbURL = process.env.ATLAS_DB  || "mongodb://127.0.0.1:27017/wanderlast";
 
+// Validate dbURL before using it
 if (!dbURL || dbURL === "") {
-    console.error("❌ FATAL ERROR: ATLAS_DB is not set in environment variables!");
+    console.error("❌ FATAL ERROR: ATLAS_DB is not set or invalid in environment variables!");
     process.exit(1);
 }
 
@@ -55,6 +56,9 @@ const store = MongoStore.create({
 
 store.on("error", (err) => {
     console.error("⚠ Session store error:", err.message);
+    if (err.message.includes("Cannot read properties of null")) {
+        console.error("❌ Check your MongoDB connection string and cluster status.");
+    }
 });
 
 
