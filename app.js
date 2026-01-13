@@ -44,21 +44,31 @@ mongoose.connect(dbURL, {
 });
 
 
-const store = MongoStore.create({
-    mongoUrl: dbURL,
-    collectionName: "sessions", 
-    touchAfter: 24 * 60 * 60, 
-    crypto: {
-        secret: process.env.SECRET
-    }
-});
+if (!process.env.SECRET || process.env.SECRET === "") {
+    console.error("❌ FATAL ERROR: SECRET is not set in environment variables!");
+    process.exit(1);
+}
+let store;
+try {
+    store = MongoStore.create({
+        mongoUrl: dbURL,
+        collectionName: "sessions",
+        touchAfter: 24 * 60 * 60, // 1 day
+        crypto: {
+            secret: process.env.SECRET
+        }
+    });
 
-store.on("error", (err) => {
-    console.error("⚠ Session store error:", err.message);
-    if (err.message.includes("Cannot read properties of null")) {
-        console.error("❌ Check your MongoDB connection string and cluster status.");
-    }
-});
+    store.on("error", (err) => {
+        console.error("⚠ Session store error:", err.message);
+        if (err.message.includes("Cannot read properties of null")) {
+            console.error("❌ Check your MongoDB connection string and cluster status.");
+        }
+    });
+} catch (err) {
+    console.error("❌ Failed to initialize session store:", err.message);
+    process.exit(1);
+}
 
 
 const sessionOptions = {
