@@ -19,6 +19,7 @@ router.route("/login")
 async (req, res) => {
   req.flash("success", "Logged In Successfully");
   let redirectUrl=res.locals.redirectUrl || "/listings";
+  delete req.session.redirectUrl;
   res.redirect(redirectUrl);
 });
 

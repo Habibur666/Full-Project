@@ -77,7 +77,7 @@ async function startApp() {
         // This is the recommended approach for mongoose connections
         const store = MongoStore.create({
             clientPromise: Promise.resolve(client),
-            dbName: db.databaseName,
+            dbName: "wanderlust", // Explicitly set to wanderlust database
             collectionName: "sessions",
             touchAfter: 24 * 60 * 60, // 1 day
             ttl: 7 * 24 * 60 * 60 // 7 days
