@@ -46,7 +46,7 @@ async function startApp() {
         
         // Create session store after MongoDB connection is established
         const store = MongoStore.create({
-            client: mongoose.connection.getClient(),
+            mongoUrl: dbURL,
             collectionName: "sessions",
             touchAfter: 24 * 60 * 60, // 1 day
             crypto: {
