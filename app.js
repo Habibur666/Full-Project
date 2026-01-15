@@ -37,40 +37,30 @@ if (!process.env.SECRET || process.env.SECRET === "") {
     process.exit(1);
 }
 
-// Handle unhandled promise rejections (like connect-mongo errors)
 process.on('unhandledRejection', (err) => {
-    // Suppress the specific connect-mongo null length error
     if (err && err.message && err.message.includes("Cannot read properties of null (reading 'length')")) {
-        // This is a known connect-mongo v5 bug, silently ignore it
         return;
     }
     console.error('Unhandled Promise Rejection:', err);
 });
 
-// Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
-    // Suppress the specific connect-mongo null length error
     if (err && err.message && err.message.includes("Cannot read properties of null (reading 'length')")) {
-        // This is a known connect-mongo v5 bug, silently ignore it
         return;
     }
     console.error('Uncaught Exception:', err);
     process.exit(1);
 });
 
-// Async function to initialize the app
 async function startApp() {
     try {
-        // Log environment info for debugging
         console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
         console.log(`🔗 Database: ${dbURL ? 'Connected' : 'Not set'}`);
         console.log(`🔑 Secret: ${process.env.SECRET ? 'Set' : 'Not set'}`);
         
-        // Connect to MongoDB first
         await mongoose.connect(dbURL);
         console.log("✅ MongoDB Connected to Atlas");
         
-        // Ensure the connection is fully ready
         const db = mongoose.connection.db;
         const client = mongoose.connection.getClient();
         
@@ -78,17 +68,14 @@ async function startApp() {
             throw new Error("MongoDB connection not fully initialized");
         }
         
-        // Create session store using clientPromise for connect-mongo v5
-        // This is the recommended approach for mongoose connections
         const store = MongoStore.create({
             clientPromise: Promise.resolve(client),
-            dbName: "wanderlust", // Explicitly set to wanderlust database
+            dbName: "wanderlust",
             collectionName: "sessions",
-            touchAfter: 24 * 60 * 60, // 1 day
-            ttl: 7 * 24 * 60 * 60 // 7 days
+            touchAfter: 24 * 60 * 60,
+            ttl: 7 * 24 * 60 * 60
         });
 
-        // Handle store errors gracefully
         store.on("error", (err) => {
             console.error("⚠ Session store error:", err.message);
         });
@@ -101,12 +88,11 @@ async function startApp() {
             cookie: {
                 maxAge: 1000 * 60 * 60 * 24 * 7, 
                 httpOnly: true,
-                secure: process.env.NODE_ENV === "production", // Use secure cookies in production (HTTPS required)
-                sameSite: process.env.NODE_ENV === "production" ? "lax" : "lax" // Use lax for same-site requests
+                secure: process.env.NODE_ENV === "production",
+                sameSite: process.env.NODE_ENV === "production" ? "lax" : "lax" 
             }
         };
 
-        // Trust proxy for Render and other hosting platforms
         app.set('trust proxy', 1);
 
         app.use(session(sessionOptions));
@@ -155,5 +141,4 @@ async function startApp() {
     }
 }
 
-// Start the app
 startApp();
